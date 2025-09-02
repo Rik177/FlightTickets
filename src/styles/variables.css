@@ -1,0 +1,9 @@
+:root {
+    --color-text-primary: #4E148C;
+    --color-text-secondary: #858AE3;
+    --color-text-contrast: #F7F9F7;
+
+    --color-block-bg: #E8EBF2;
+    --color-tab-border: #4E148C;
+    --color-active-bg: #4E148C;
+}

@@ -1,0 +1,18 @@
+.aside {
+    display: flex;
+    flex-direction: column;
+    row-gap: 47px;
+}
+
+/* .aside__section {
+    background-color: var(--color-block-bg);
+    padding: 19px;
+    border-radius: 10px;
+} */
+
+/* .aside__title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--color-text-primary);
+    margin-bottom: 27px;
+} */

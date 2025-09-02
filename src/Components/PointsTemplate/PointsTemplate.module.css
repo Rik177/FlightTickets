@@ -1,0 +1,58 @@
+.checkBlock {
+    background-color: var(--color-block-bg);
+    padding: 19px;
+    border-radius: 10px;
+}
+
+.checkBlock__title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--color-text-primary);
+    margin-bottom: 27px;
+}
+
+.checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 21px;
+    color: var(--color-text-secondary);
+}
+
+.checkboxes__checkbox{
+    padding-left: 21px;
+    cursor: pointer;
+}
+
+.checkbox__input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.checkbox__custom {
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    margin-left: -21px;
+    margin-top: -19px;
+}
+
+.checkbox__name {
+    margin-left: 19px;
+}
+
+.checkbox__input[name='transfers-checkbox'] + .checkbox__custom {
+    background-image: url(/images/Checkbox.svg);
+}
+.checkbox__input[name='transfers-checkbox']:checked + .checkbox__custom  {
+    background-image: url(/images/Checkbox-checked.svg);
+}
+
+.checkbox__input[name='companies-checkbox'] + .checkbox__custom  {
+    background-image: url(/images/Radio.svg);
+}
+.checkbox__input[name='companies-checkbox']:checked + .checkbox__custom {
+    background-image: url(/images/Radio-checked.svg);
+}
+
+

@@ -1,0 +1,31 @@
+.flightCard {
+    background-color: var(--color-block-bg);
+    padding: 39px 40px 25px 38px;
+    border-radius: 10px;
+}
+
+.flightCard__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.flightCard__info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flightCard__price {
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--color-text-primary);
+}
+
+.flightCard__subtitle {
+    color: var(--color-text-secondary);
+    margin-bottom: 9px;
+}
+
+.flightCard__data {
+    color: var(--color-text-primary);
+}
