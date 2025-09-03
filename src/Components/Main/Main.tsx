@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import type { AppDispatch } from '../../redux/store';
+import { useAppSelector } from '../../redux/store';
+import { loadMore } from '../../redux/slices';
 
 import Aside from '../Aside/Aside';
 import styles from './Main.module.css'
@@ -22,16 +25,22 @@ const Main: React.FC = () => {
         'Самый оптимальный'
     ]
 
+    const { visibleItems } = useAppSelector((state) => state.flights);
+    
 
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => { 
-        dispatch(fetchFlights())
-
-        
+        dispatch(fetchFlights());
     }, [dispatch])
 
+    const handleLoadMore = () => {
+        dispatch(loadMore());
+    };
+
     console.log('Initial Redux state:', state);
+
+    const flightData = state.flights.items;
 
     return (
         <div className="content">
@@ -57,11 +66,21 @@ const Main: React.FC = () => {
                         </div>
                     </section>
                     <section className={styles.main__flights}>
-                        {state.flights.map((card) => (
+                        {flightData.slice(0, visibleItems).map((card) => (
                             <FlightCard data={card} key={ `card-${card.id}` } />
                         )) }
                     </section>
-                    <button className={ styles.main__button }></button>
+                    
+                    {state.loading ? (
+                        <div className={ styles.main__loader }></div>
+                    ) : (
+                        <button
+                            className={styles.main__button}
+                            onClick={handleLoadMore}
+                        >
+                            Загрузить ещё билеты
+                        </button>
+                    )}
                 </main>
             </div>
         </div>

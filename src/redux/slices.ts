@@ -21,30 +21,48 @@ export type Flight = {
     "connectionAmount": number;
 };
 
-type FlightsState = Flight[];
+export type FlightsItems = {
+    items: Flight[];
+    visibleItems: number;
+    loading: boolean;
+    hasMore: boolean;
+}
 
-const initialState: FlightsState = [];
-
+const initialState: FlightsItems = {
+    items: [],
+    visibleItems: 3,
+    loading: false,
+    hasMore: true
+    }
 
 
 export const flightsSlice = createSlice({
     name: 'flights', 
     initialState,
     reducers: {
-        clearFlights: (state) => {
-            state.length = 0; 
-        }
+        loadMore: (state) => {
+            const nextVisible = state.visibleItems + 3;
+            state.visibleItems = Math.min(nextVisible, state.items.length);
+            state.hasMore = state.visibleItems < state.items.length;
+        },
     },
     extraReducers: (builder) => { 
         builder
-            .addCase(fetchFlights.fulfilled, (state, action) => { 
-                state.push(...action.payload);
+            .addCase(fetchFlights.pending, (state) => {
+                state.loading = true;
             })
-            .addCase(fetchFlights.rejected, () => {
-                console.log('Oh!')
+            .addCase(fetchFlights.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items.push(...action.payload);
+                state.visibleItems = Math.min(3, action.payload.length);
+                state.hasMore = action.payload.length > 3;
+            })
+            .addCase(fetchFlights.rejected, (state) => {
+                state.loading = false;
+                console.warn('oh!');
             });
     }
 
 })
 
-// export const { addFlights } = flightsSlice.actions;
+export const { loadMore } = flightsSlice.actions;
