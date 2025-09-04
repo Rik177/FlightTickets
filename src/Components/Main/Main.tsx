@@ -9,31 +9,27 @@ import styles from './Main.module.css';
 import fetchFlights from '../../redux/thunks';
 import FlightCard from '../FlightCard/FlightCard';
 
+import { itemsSelectors } from '../../redux/slices';
+
 const Main: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);
-
     const dispatch = useDispatch<AppDispatch>();
-
-    const addedItems = useSelector((state: RootState) => state.flights.addedItems);
-    const loading = useSelector((state: RootState) => state.flights.loading);
-    const pagination = useSelector((state: RootState) => state.flights.pagination);
+    const items = useSelector((state: RootState) => itemsSelectors.selectAll({ items: state.flights }));
+    const handleLoadMore = () => {
+        if (hasMore && !loading) {
+            dispatch(fetchFlights());
+        }
+    };
+    const { loading, hasMore } = useSelector(
+        (state: RootState) => state.flights
+    );
 
     const tabs = ['Самый дешёвый', 'Самый быстрый', 'Самый оптимальный'];
 
     useEffect(() => {
-        dispatch(fetchFlights({ page: 1, limit: 3 }));
+        dispatch(fetchFlights());
     }, [dispatch]);
 
-    const handleLoadMore = () => {
-        if (pagination) {
-            dispatch(
-                fetchFlights({
-                    page: pagination.currentPage + 1,
-                    limit: pagination.itemsPerPage,
-                })
-            );
-        }
-    };
 
     return (
         <div className="content">
@@ -58,26 +54,25 @@ const Main: React.FC = () => {
                     </section>
 
                     <section className={styles.main__flights}>
-                        {addedItems.length === 0 && !loading && (
+                        {items.length === 0 && !loading && (
                             <p>Нет доступных билетов</p>
                         )}
-                        {addedItems.map((card) => (
+                        {items.map((card) => (
                             <FlightCard data={card} key={`card-${card.id}`} />
                         ))}
                     </section>
 
                     {loading ? (
-                    <div className={styles.main__loader}></div>
+                        <div className={styles.main__loader}></div>
                     ) : (
-                    pagination && addedItems.length > 0 && (
-                        <button
-                            className={styles.main__button}
-                            onClick={handleLoadMore}
-                            disabled={addedItems.length >= pagination.totalItems}
-                        >
-                            Загрузить ещё билеты
-                        </button>
-                    )
+                        hasMore && (
+                            <button
+                                className={styles.main__button}
+                                onClick={handleLoadMore}
+                            >
+                                Загрузить ещё билеты
+                            </button>
+                        )
                     )}
                 </main>
             </div>

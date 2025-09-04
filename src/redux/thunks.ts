@@ -1,36 +1,32 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Flight, FlightsResponse } from './slices';
+import type { Flight } from './slices';
+import type { RootState } from './store'
 
-type fetchProps = { 
-    page: number;
-    limit: number;
-};
 
-const fetchFlights = createAsyncThunk<FlightsResponse, fetchProps>(
+const fetchFlights = createAsyncThunk<
+        Flight[], 
+        void,   
+        { state: RootState }
+    >(
     'flights/fetch',
-    async ({ page = 1, limit = 3 }) => {
-        // Получаем только нужную страницу
-        const url = `http://localhost:3001/tickets?_page=${page}&_limit=${limit}`;
-        const res = await fetch(url);
+    async (_, { getState, rejectWithValue }) => {
 
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
+        const { offset, limit } = getState().flights;
+
+        try {
+            const res = await fetch(`http://localhost:3001/tickets?_limit=${limit}&_start=${offset}`);
+
+            if (!res.ok) {
+                throw new Error(`Ошибка запроса: ${res.status}`);
+            }
+
+            const data: Flight[] = await res.json();
+            return data;
+        } catch (err: any) {
+            return rejectWithValue(err.message);
         }
 
-        const data: Flight[] = await res.json();
-        // Получаем общее количество билетов из заголовка
-        const totalItems = Number(res.headers.get('X-Total-Count')) || data.length;
-        const totalPages = Math.ceil(totalItems / limit);
-
-        return {
-            data,
-            pagination: {
-                currentPage: page,
-                totalPages,
-                totalItems,
-                itemsPerPage: limit,
-            },
-        };
+    
     }
 );
 

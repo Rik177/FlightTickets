@@ -1,7 +1,7 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+// import type { PayloadAction } from '@reduxjs/toolkit';
 import fetchFlights from './thunks';
-import type { RootState } from '../redux/store'; // <-- правильно импортируем RootState
+// import type { RootState } from '../redux/store'; 
 
 export type Flight = {
     id: number;
@@ -19,33 +19,28 @@ export type Flight = {
     connectionAmount: number;
 };
 
-export type FlightsResponse = {
-    data: Flight[];
-    pagination: {
-        currentPage: number;
-        totalPages: number;
-        totalItems: number;
-        itemsPerPage: number;
-    };
-};
 
-type FlightsState = {
+
+export type FlightsExtraState = {
+    // items: Flight[];
     loading: boolean;
-    addedItems: Flight[];
-    pagination?: {
-        currentPage: number;
-        totalPages: number;
-        totalItems: number;
-        itemsPerPage: number;
-    };
+    error: string | null;
+    offset: number;
+    limit: number;
+    hasMore: boolean;
 };
 
-const flightsAdapter = createEntityAdapter<Flight>();
+const flightsAdapter = createEntityAdapter<Flight>({
+    selectId: (item) => item.id,
+    sortComparer: (a, b) => a.id - b.id,
+});
 
-const initialState = flightsAdapter.getInitialState<FlightsState>({
+const initialState = flightsAdapter.getInitialState<FlightsExtraState>({
     loading: false,
-    addedItems: [],
-    pagination: undefined,
+    error: null,
+    offset: 0,
+    limit: 3,
+    hasMore: true,
 });
 
 
@@ -58,34 +53,25 @@ const flightsSlice = createSlice({
             .addCase(fetchFlights.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(fetchFlights.fulfilled, (state, action: PayloadAction<FlightsResponse>) => {
+            .addCase(fetchFlights.fulfilled, (state, action) => {
                 state.loading = false;
-                if (action.payload) {
-                    
-                    if (action.payload.pagination.currentPage === 1) {
-                        state.addedItems = action.payload.data;
-                    } else {
-                        
-                        const existingIds = new Set(state.addedItems.map(item => item.id));
-                        const newItems = action.payload.data.filter(item => !existingIds.has(item.id));
-                        state.addedItems = [...state.addedItems, ...newItems];
-                    }
-                    state.pagination = action.payload.pagination;
-                }
+                flightsAdapter.addMany(state, action.payload);
+                state.offset += state.limit;
+
+                if (action.payload.length < state.limit) {
+                    state.hasMore = false;
+}
             })
-            .addCase(fetchFlights.rejected, (state) => {
+            .addCase(fetchFlights.rejected, (state, action) => {
                 state.loading = false;
-                console.warn('Ошибка загрузки!');
+                state.error = action.payload as string;
             });
     },
 });
 
-export const flightsReducer = flightsSlice.reducer;
-export const flightsActions = flightsSlice.actions;
-export { flightsSlice };
+export const itemsSelectors = flightsAdapter.getSelectors(
+    (state: { items: ReturnType<typeof flightsSlice.reducer> }) => state.items
+);
 
-export const {
-    selectAll: selectAllFlights,
-    selectById: selectFlightById,
-    selectIds: selectFlightIds,
-} = flightsAdapter.getSelectors<RootState>((state) => state.flights);
+
+export default flightsSlice.reducer;
