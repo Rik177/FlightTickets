@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { flightsSlice } from "./slices";
+import { flightsReducer } from "./slices";
 import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 const store = configureStore({
     reducer: {
-        flights: flightsSlice.reducer,
+        flights: flightsReducer,
     }
 })
 export type AppDispatch = typeof store.dispatch;

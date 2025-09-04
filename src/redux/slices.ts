@@ -1,68 +1,91 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import fetchFlights from './thunks';
-
-// import type { PayloadAction } from '@reduxjs/toolkit';
-
-
+import type { RootState } from '../redux/store'; // <-- правильно импортируем RootState
 
 export type Flight = {
-    "id": number;
-    "from": string;
-    "to": string;
-    "company": string;
-    "price": number;
-    "currency": string;
-    "time": {
-        "startTime": string;
-        "endTime": string;
-    },
-    "duration": number;
-    "date": string;
-    "connectionAmount": number;
+    id: number;
+    from: string;
+    to: string;
+    company: string;
+    price: number;
+    currency: string;
+    time: {
+        startTime: string;
+        endTime: string;
+    };
+    duration: number;
+    date: string;
+    connectionAmount: number;
 };
 
-export type FlightsItems = {
-    items: Flight[];
-    visibleItems: number;
+export type FlightsResponse = {
+    data: Flight[];
+    pagination: {
+        currentPage: number;
+        totalPages: number;
+        totalItems: number;
+        itemsPerPage: number;
+    };
+};
+
+type FlightsState = {
     loading: boolean;
-    hasMore: boolean;
-}
+    addedItems: Flight[];
+    pagination?: {
+        currentPage: number;
+        totalPages: number;
+        totalItems: number;
+        itemsPerPage: number;
+    };
+};
 
-const initialState: FlightsItems = {
-    items: [],
-    visibleItems: 3,
+const flightsAdapter = createEntityAdapter<Flight>();
+
+const initialState = flightsAdapter.getInitialState<FlightsState>({
     loading: false,
-    hasMore: true
-    }
+    addedItems: [],
+    pagination: undefined,
+});
 
 
-export const flightsSlice = createSlice({
-    name: 'flights', 
+const flightsSlice = createSlice({
+    name: 'flights',
     initialState,
-    reducers: {
-        loadMore: (state) => {
-            const nextVisible = state.visibleItems + 3;
-            state.visibleItems = Math.min(nextVisible, state.items.length);
-            state.hasMore = state.visibleItems < state.items.length;
-        },
-    },
-    extraReducers: (builder) => { 
+    reducers: {},
+    extraReducers: (builder) => {
         builder
             .addCase(fetchFlights.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(fetchFlights.fulfilled, (state, action) => {
+            .addCase(fetchFlights.fulfilled, (state, action: PayloadAction<FlightsResponse>) => {
                 state.loading = false;
-                state.items.push(...action.payload);
-                state.visibleItems = Math.min(3, action.payload.length);
-                state.hasMore = action.payload.length > 3;
+                if (action.payload) {
+                    
+                    if (action.payload.pagination.currentPage === 1) {
+                        state.addedItems = action.payload.data;
+                    } else {
+                        
+                        const existingIds = new Set(state.addedItems.map(item => item.id));
+                        const newItems = action.payload.data.filter(item => !existingIds.has(item.id));
+                        state.addedItems = [...state.addedItems, ...newItems];
+                    }
+                    state.pagination = action.payload.pagination;
+                }
             })
             .addCase(fetchFlights.rejected, (state) => {
                 state.loading = false;
-                console.warn('oh!');
+                console.warn('Ошибка загрузки!');
             });
-    }
+    },
+});
 
-})
+export const flightsReducer = flightsSlice.reducer;
+export const flightsActions = flightsSlice.actions;
+export { flightsSlice };
 
-export const { loadMore } = flightsSlice.actions;
+export const {
+    selectAll: selectAllFlights,
+    selectById: selectFlightById,
+    selectIds: selectFlightIds,
+} = flightsAdapter.getSelectors<RootState>((state) => state.flights);
