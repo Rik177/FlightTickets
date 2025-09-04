@@ -9,12 +9,18 @@ import styles from './Main.module.css';
 import fetchFlights from '../../redux/thunks';
 import FlightCard from '../FlightCard/FlightCard';
 
-import { itemsSelectors } from '../../redux/slices';
+import { itemsSelectors } from '../../redux/flightsSlice';
 
 const Main: React.FC = () => {
+    const filters = useSelector((state: RootState) => state.filters);
     const [activeTab, setActiveTab] = useState(0);
     const dispatch = useDispatch<AppDispatch>();
     const items = useSelector((state: RootState) => itemsSelectors.selectAll({ items: state.flights }));
+    // Фильтрация билетов по фильтрам из Redux
+    const filteredItems = items.filter(flight =>
+        (filters.companies.length === 0 || filters.companies.includes(flight.company)) &&
+        (filters.transfers.length === 0 || filters.transfers.includes(flight.connectionAmount))
+    );
     const handleLoadMore = () => {
         if (hasMore && !loading) {
             dispatch(fetchFlights());
@@ -54,10 +60,10 @@ const Main: React.FC = () => {
                     </section>
 
                     <section className={styles.main__flights}>
-                        {items.length === 0 && !loading && (
+                        {filteredItems.length === 0 && !loading && (
                             <p>Нет доступных билетов</p>
                         )}
-                        {items.map((card) => (
+                        {filteredItems.map((card) => (
                             <FlightCard data={card} key={`card-${card.id}`} />
                         ))}
                     </section>

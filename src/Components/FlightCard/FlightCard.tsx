@@ -1,6 +1,6 @@
 import styles from './FlightCard.module.css'
 
-import type { Flight } from '../../redux/slices';
+import type { Flight } from '../../redux/flightsSlice';
 
 type flightCardProps = {
     data: Flight

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Flight } from './slices';
+import type { Flight } from './flightsSlice';
 import type { RootState } from './store'
 
 

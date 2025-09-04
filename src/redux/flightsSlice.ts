@@ -22,7 +22,6 @@ export type Flight = {
 
 
 export type FlightsExtraState = {
-    // items: Flight[];
     loading: boolean;
     error: string | null;
     offset: number;
@@ -32,7 +31,7 @@ export type FlightsExtraState = {
 
 const flightsAdapter = createEntityAdapter<Flight>({
     selectId: (item) => item.id,
-    sortComparer: (a, b) => a.id - b.id,
+    // sortComparer: (a, b) => a.id - b.id,
 });
 
 const initialState = flightsAdapter.getInitialState<FlightsExtraState>({

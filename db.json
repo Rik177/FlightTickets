@@ -19,7 +19,7 @@
             "id": 2,
             "from": "KUF",
             "to": "ROV",
-            "company": "Pobeda",
+            "company": "Победа",
             "price": 10200,
             "currency": "RUB",
             "time": {
@@ -64,7 +64,7 @@
             "id": 5,
             "from": "LED",
             "to": "SVO",
-            "company": "Pobeda",
+            "company": "Победа",
             "price": 6800,
             "currency": "RUB",
             "time": {
@@ -79,7 +79,7 @@
             "id": 6,
             "from": "VKO",
             "to": "GOJ",
-            "company": "Pobeda",
+            "company": "Победа",
             "price": 5400,
             "currency": "RUB",
             "time": {
@@ -124,7 +124,7 @@
             "id": 9,
             "from": "SVX",
             "to": "KGD",
-            "company": "Pobeda",
+            "company": "Победа",
             "price": 8900,
             "currency": "RUB",
             "time": {
@@ -169,7 +169,7 @@
             "id": 12,
             "from": "KRR",
             "to": "SVO",
-            "company": "Pobeda",
+            "company": "Победа",
             "price": 7200,
             "currency": "RUB",
             "time": {
@@ -229,7 +229,7 @@
             "id": 16,
             "from": "LED",
             "to": "AAQ",
-            "company": "Pobeda",
+            "company": "Победа",
             "price": 8300,
             "currency": "RUB",
             "time": {
