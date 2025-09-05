@@ -28,9 +28,7 @@ export type FlightsExtraState = {
     hasMore: boolean;
 };
 
-const flightsAdapter = createEntityAdapter<Flight>({
-    selectId: (item) => item.id
-});
+const flightsAdapter = createEntityAdapter<Flight>();
 
 const initialState = flightsAdapter.getInitialState<FlightsExtraState>({
     loading: false,
