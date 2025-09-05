@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../redux/store';
 
 import Aside from '../Aside/Aside';
+import Dropdown from '../Dropdown/Dropdown';
+
 import styles from './Main.module.css';
 
 import fetchFlights from '../../redux/thunks';
@@ -11,16 +13,35 @@ import FlightCard from '../FlightCard/FlightCard';
 
 import { itemsSelectors } from '../../redux/flightsSlice';
 
+import { setTab } from '../../redux/filtersSlice';
+
 const Main: React.FC = () => {
     const filters = useSelector((state: RootState) => state.filters);
     const [activeTab, setActiveTab] = useState(0);
     const dispatch = useDispatch<AppDispatch>();
     const items = useSelector((state: RootState) => itemsSelectors.selectAll({ items: state.flights }));
-    // Фильтрация билетов по фильтрам из Redux
     const filteredItems = items.filter(flight =>
         (filters.companies.length === 0 || filters.companies.includes(flight.company)) &&
         (filters.transfers.length === 0 || filters.transfers.includes(flight.connectionAmount))
-    );
+    ).sort((a, b) => {
+        switch (filters.tab) {
+            case 'Самый дешёвый':
+                return a.price - b.price;
+            case 'Самый быстрый':
+                return a.duration - b.duration;
+            case 'Самый оптимальный': { 
+                const maxPrice = Math.max(a.price, b.price);
+                const maxDuration = Math.max(a.duration, b.duration);
+
+                const A = (a.price / maxPrice) + (a.duration / maxDuration);
+                const B = (b.price / maxPrice) + (b.duration / maxDuration);
+
+                return A - B;
+            }   
+            default:
+                return 0;
+        }
+    });
     const handleLoadMore = () => {
         if (hasMore && !loading) {
             dispatch(fetchFlights());
@@ -51,12 +72,16 @@ const Main: React.FC = () => {
                                         type="radio"
                                         name="tab"
                                         checked={activeTab === index}
-                                        onChange={() => setActiveTab(index)}
+                                        onChange={() => {
+                                            setActiveTab(index);
+                                            dispatch(setTab(tabs[index]));
+                                        }}
                                     />
                                     <span className={styles.tab__name}>{tab}</span>
                                 </label>
                             ))}
                         </div>
+                        <Dropdown />
                     </section>
 
                     <section className={styles.main__flights}>

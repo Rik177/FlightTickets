@@ -1,7 +1,6 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-// import type { PayloadAction } from '@reduxjs/toolkit';
 import fetchFlights from './thunks';
-// import type { RootState } from '../redux/store'; 
+
 
 export type Flight = {
     id: number;
@@ -30,8 +29,7 @@ export type FlightsExtraState = {
 };
 
 const flightsAdapter = createEntityAdapter<Flight>({
-    selectId: (item) => item.id,
-    // sortComparer: (a, b) => a.id - b.id,
+    selectId: (item) => item.id
 });
 
 const initialState = flightsAdapter.getInitialState<FlightsExtraState>({

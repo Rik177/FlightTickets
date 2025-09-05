@@ -1,26 +1,9 @@
 import styles from './Aside.module.css';
 import PointsTemplate from '../PointsTemplate/CheckboxTemplate';
+import { transfers, companies } from './aside-blocks';
 
 const Aside: React.FC = () => { 
-    const transfers = {
-        name: 'Количество пересадок',
-        checkName: 'transfers-checkbox',
-        points: [
-            'Без пересадок',
-            '1 пересадка',
-            '2 пересадки',
-            '3 пересадки'
-        ]
-    }
-    const companies = {
-        name: 'Компании',
-        checkName: 'companies-checkbox',
-        points: [
-            'Победа',
-            'Red Wings',
-            'S7 Airlines'
-        ]
-    }
+    
 
 
     return (
@@ -30,5 +13,6 @@ const Aside: React.FC = () => {
         </aside>
     )
 }
+
 
 export default Aside;

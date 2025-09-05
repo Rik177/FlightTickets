@@ -2,12 +2,16 @@
     background-color: var(--color-block-bg);
     padding: 39px 40px 25px 38px;
     border-radius: 10px;
+    height: 174px;
+    display: flex;
+    flex-direction: column;
 }
 
 .flightCard__header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
+    margin-bottom: auto;
+    align-items: center;
 }
 
 .flightCard__info {

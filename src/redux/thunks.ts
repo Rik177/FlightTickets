@@ -14,7 +14,7 @@ const fetchFlights = createAsyncThunk<
         const { offset, limit } = getState().flights;
 
         try {
-            const res = await fetch(`http://localhost:3001/tickets?_limit=${limit}&_start=${offset}`);
+            const res = await fetch(`https://my-json-server.typicode.com/Rik177/my-json-server/tickets?_limit=${limit}&_start=${offset}`);
 
             if (!res.ok) {
                 throw new Error(`Ошибка запроса: ${res.status}`);

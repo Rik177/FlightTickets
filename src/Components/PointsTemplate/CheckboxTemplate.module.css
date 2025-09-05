@@ -56,3 +56,31 @@
 }
 
 
+@media (max-width: 768px) {
+    .checkBlock {
+        background-color: transparent;
+    }
+    .checkBlock__title {
+        color: var(--color-text-accent);
+    }
+
+    .checkboxes {
+        color: var(--color-text-accent);
+    }
+    
+    .checkbox__input[name='transfers-checkbox'] + .checkbox__custom {
+        background-image: url(/images/Checkbox-Dropdown.svg);
+    }
+    .checkbox__input[name='transfers-checkbox']:checked + .checkbox__custom  {
+        background-image: url(/images/Checkbox-Dropdown-Checked.svg);
+    }
+
+    .checkbox__input[name='companies-checkbox'] + .checkbox__custom  {
+        background-image: url(/images/Radio-Dropdown.svg);
+    }
+    .checkbox__input[name='companies-checkbox']:checked + .checkbox__custom {
+        background-image: url(/images/Radio-Dropdown-Checked.svg);
+    }
+
+
+}

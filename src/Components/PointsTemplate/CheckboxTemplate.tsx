@@ -1,4 +1,4 @@
-import styles from './PointsTemplate.module.css';
+import styles from './CheckboxTemplate.module.css';
 import { useDispatch } from 'react-redux';
 import { setCompany, setTransfer } from '../../redux/filtersSlice';
 
