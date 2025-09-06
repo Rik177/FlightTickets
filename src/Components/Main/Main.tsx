@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { AppDispatch, RootState } from '../../redux/store';
@@ -42,6 +42,32 @@ const Main: React.FC = () => {
                 return 0;
         }
     });
+
+    // const filteredItems = useMemo(() => {
+    //     items.filter(flight =>
+    //     (filters.companies.length === 0 || filters.companies.includes(flight.company)) &&
+    //     (filters.transfers.length === 0 || filters.transfers.includes(flight.connectionAmount))
+    // ).sort((a, b) => {
+    //     switch (filters.tab) {
+    //         case 'Самый дешёвый':
+    //             return a.price - b.price;
+    //         case 'Самый быстрый':
+    //             return a.duration - b.duration;
+    //         case 'Самый оптимальный': { 
+    //             const maxPrice = Math.max(a.price, b.price);
+    //             const maxDuration = Math.max(a.duration, b.duration);
+
+    //             const A = (a.price / maxPrice) + (a.duration / maxDuration);
+    //             const B = (b.price / maxPrice) + (b.duration / maxDuration);
+
+    //             return A - B;
+    //         }   
+    //         default:
+    //             return 0;
+    //     }
+    // });
+    // }, [items, filters]);
+
     const handleLoadMore = () => {
         if (hasMore && !loading) {
             dispatch(fetchFlights());
@@ -54,7 +80,9 @@ const Main: React.FC = () => {
     const tabs = ['Самый дешёвый', 'Самый быстрый', 'Самый оптимальный'];
 
     useEffect(() => {
-        dispatch(fetchFlights());
+        const controller = new AbortController();
+        dispatch(fetchFlights(undefined, { signal: controller.signal }));
+        return () => controller.abort();
     }, [dispatch]);
 
 
